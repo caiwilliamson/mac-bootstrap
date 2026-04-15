@@ -1,0 +1,59 @@
+#!/bin/bash
+
+green="\033[1;32m"
+reset="\033[0m"
+
+print_title() {
+  local text="$*"
+  printf "\n%b\n%b\n\n" "$text" "${text//?/=}"
+}
+
+print_message() {
+  printf "%b\n\n" "${green}✔${reset} $1"
+}
+
+allow_shell() {
+  local shell_path="$1"
+  grep -qxF "$shell_path" /etc/shells \
+    || printf '%s\n' "$shell_path" | sudo tee -a /etc/shells >/dev/null
+}
+
+setup_github_ssh_keys() {
+  local ssh_dir="$HOME/.ssh"
+
+  if [ -d "$ssh_dir" ] && [ -n "$(ls -A "$ssh_dir")" ]; then
+    print_message "SSH directory exists and is not empty. Skipping key generation..."
+  else
+    local key_name="$(hostname)_$(date '+%Y-%m-%d_%H:%M:%S')"
+    local key_path="$ssh_dir/github"
+    local key_type="ed25519"
+    ssh-keygen -t "$key_type" -C "$key_name" -f "$key_path" || exit 1
+
+    cp ssh_config "$ssh_dir/config" || exit 1
+
+    printf "Enter GitHub personal access token: "
+    read -rs GH_TOKEN
+    printf "\n"
+
+    local pub_key_content="$(cat "$key_path.pub")"
+    curl -f -sS \
+      -H "Accept: application/vnd.github+json" \
+      -H "Authorization: Bearer $GH_TOKEN" \
+      -H "X-GitHub-Api-Version: 2026-03-10" \
+      https://api.github.com/user/keys \
+      -d "{\"title\":\"$key_name\",\"key\":\"$pub_key_content\"}"
+    local curl_status=$?
+
+    unset GH_TOKEN
+
+    if [ $curl_status -ne 0 ]; then
+      rm -f "$key_path" "$key_path.pub"
+      exit 1
+    fi
+  fi
+
+  local ssh_response
+  ssh_response=$(ssh -T git@github.com 2>&1)
+  printf "%s\n\n" "$ssh_response"
+  echo "$ssh_response" | grep -q "successfully authenticated" || exit 1
+}

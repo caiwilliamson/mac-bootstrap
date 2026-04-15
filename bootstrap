@@ -1,0 +1,82 @@
+#!/bin/bash
+
+source utilities
+
+# Xcode Command Line Tools
+# ========================
+print_title "Xcode Command Line Tools"
+xcode-select -p >/dev/null 2>&1 \
+  && print_message "Xcode Command Line Tools already installed" \
+  || { print_message "Xcode Command Line Tools not installed. Run: xcode-select --install"; exit 1; }
+
+# Homebrew
+# ========
+print_title "Homebrew"
+( [ -f /opt/homebrew/bin/brew ] || [ -f /usr/local/bin/brew ] ) \
+  && print_message "Homebrew already installed" \
+  || /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+eval "$(brew shellenv)"
+brew bundle
+
+# GitHub SSH Keys
+# ===============
+print_title "GitHub SSH Keys"
+setup_github_ssh_keys
+
+# yadm
+# ====
+print_title "yadm"
+yadm status >/dev/null 2>&1 \
+  && print_message "yadm already cloned" \
+  || yadm clone git@github.com:caiwilliamson/dotfiles.git
+
+# asdf
+# ====
+print_title "asdf"
+export ASDF_CONFIG_FILE="$HOME/.config/asdf/.asdfrc"
+export ASDF_DATA_DIR="$HOME/.local/share/asdf"
+source "$HOMEBREW_PREFIX/opt/asdf/libexec/asdf.sh"
+
+asdf plugin add nodejs
+asdf plugin add ruby
+asdf install nodejs latest
+asdf install ruby latest
+asdf set -u nodejs latest
+asdf set -u ruby latest
+
+# Shell
+# =====
+print_title "Shell"
+allow_shell "$(which fish)"
+allow_shell "$(which zsh)"
+[ "$SHELL" = "$(which fish)" ] \
+  && print_message "Shell already set to fish" \
+  || chsh -s "$(which fish)"
+
+# Rails
+# =====
+print_title "Rails"
+[ "$(gem list '^rails$' -i)" = "true" ] \
+  && print_message "Rails already installed" \
+  || gem install rails
+
+# PostgreSQL
+# ==========
+print_title "PostgreSQL"
+psql -tAc "SELECT 1 FROM pg_database WHERE datname='$USER'" | grep -q 1 \
+  && print_message "Default database already exists" \
+  || createdb
+
+# macOS Settings
+# ==============
+print_title "macOS Settings"
+defaults write com.apple.Terminal ShowLineMarks -int 0
+defaults write com.apple.TimeMachine DoNotOfferNewDisksForBackup -bool true
+print_message "macOS settings applied"
+
+# Terminal Profile
+# ================
+print_title "Terminal Profile"
+./set_terminal_profile.applescript
+print_message "Terminal profile set"
