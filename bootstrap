@@ -24,11 +24,11 @@ brew bundle
 print_title "GitHub SSH Keys"
 setup_github_ssh_keys
 
-# yadm
-# ====
-print_title "yadm"
+# Dotfiles
+# ========
+print_title "Dotfiles"
 yadm status >/dev/null 2>&1 \
-  && print_message "yadm already cloned" \
+  && print_message "Dotfiles already cloned" \
   || yadm clone git@github.com:caiwilliamson/dotfiles.git
 
 # asdf
