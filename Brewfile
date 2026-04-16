@@ -1,8 +1,6 @@
 brew "asdf"
 brew "fish"
 brew "git"
-brew "gpg"
-brew "pinentry-mac"
 brew "postgresql", restart_service: :changed, link: true
 brew "redis", restart_service: :changed
 brew "vim"
