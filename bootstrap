@@ -75,9 +75,3 @@ defaults write com.apple.Terminal ShowLineMarks -int 0
 defaults write com.apple.TimeMachine DoNotOfferNewDisksForBackup -bool true
 chflags hidden "$HOME/Music" "$HOME/Movies" "$HOME/Pictures" "$HOME/Public"
 print_message "macOS settings applied"
-
-# Terminal Profile
-# ================
-print_title "Terminal Profile"
-./set_terminal_profile.applescript
-print_message "Terminal profile set"
