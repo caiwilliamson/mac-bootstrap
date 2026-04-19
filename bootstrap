@@ -12,11 +12,12 @@ xcode-select -p >/dev/null 2>&1 \
 # Homebrew
 # ========
 print_title "Homebrew"
-( [ -f /opt/homebrew/bin/brew ] || [ -f /usr/local/bin/brew ] ) \
+[ "$(uname -m)" = "arm64" ] && brew_path=/opt/homebrew/bin/brew || brew_path=/usr/local/bin/brew
+[ -f "$brew_path" ] \
   && print_message "Homebrew already installed" \
   || /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
-eval "$(brew shellenv)"
+eval "$($brew_path shellenv)"
 brew bundle
 
 # GitHub SSH Keys
