@@ -1,12 +1,11 @@
-green="\033[1;32m"
-reset="\033[0m"
-
 print_title() {
   local text="$*"
   printf "\n%b\n%b\n\n" "$text" "${text//?/=}"
 }
 
 print_message() {
+  local green="\033[1;32m"
+  local reset="\033[0m"
   printf "%b\n\n" "${green}✔${reset} $1"
 }
 
