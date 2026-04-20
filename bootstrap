@@ -37,19 +37,11 @@ yadm status >/dev/null 2>&1 \
   && print_message "Dotfiles already cloned" \
   || yadm clone git@github.com:caiwilliamson/dotfiles.git
 
-# asdf
+# mise
 # ====
-print_title "asdf"
-export ASDF_CONFIG_FILE="$HOME/.config/asdf/.asdfrc"
-export ASDF_DATA_DIR="$HOME/.local/share/asdf"
-source "$HOMEBREW_PREFIX/opt/asdf/libexec/asdf.sh"
-
-asdf plugin add nodejs
-asdf plugin add ruby
-asdf install nodejs latest
-asdf install ruby latest
-asdf set -u nodejs latest
-asdf set -u ruby latest
+print_title "mise"
+mise install
+eval "$(mise activate zsh)"
 
 # Shell
 # =====
