@@ -1,3 +1,5 @@
+#!/bin/zsh
+
 print_title() {
   local text="$*"
   printf "\n%b\n%b\n\n" "$text" "${text//?/=}"
