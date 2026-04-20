@@ -65,9 +65,11 @@ print_title "Rails"
 # PostgreSQL
 # ==========
 print_title "PostgreSQL"
-psql -tAc "SELECT 1 FROM pg_database WHERE datname='$USER'" | grep -q 1 \
-  && print_message "Default database already exists" \
-  || createdb
+for i in $(seq 1 10); do pg_isready -q && break; sleep 1; done
+pg_isready -q || { printf "PostgreSQL failed to start\n"; exit 1; }
+createdb 2>/dev/null \
+  && print_message "Default database created" \
+  || print_message "Default database already exists"
 
 # macOS Settings
 # ==============
