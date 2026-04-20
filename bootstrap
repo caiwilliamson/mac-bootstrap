@@ -73,5 +73,5 @@ createdb 2>/dev/null \
 print_title "macOS Settings"
 defaults write com.apple.Terminal ShowLineMarks -int 0
 defaults write com.apple.TimeMachine DoNotOfferNewDisksForBackup -bool true
-chflags hidden "$HOME/Music" "$HOME/Movies" "$HOME/Pictures" "$HOME/Public"
+chflags hidden "$HOME/Movies" "$HOME/Music" "$HOME/Pictures" "$HOME/Public"
 print_message "macOS settings applied"
