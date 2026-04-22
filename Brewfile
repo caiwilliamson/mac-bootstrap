@@ -1,5 +1,6 @@
 brew "fish"
 brew "git"
+brew "gnupg"
 brew "mise"
 brew "postgresql", restart_service: :changed, link: true
 brew "redis", restart_service: :changed
