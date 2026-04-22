@@ -7,7 +7,8 @@ brew "vim"
 brew "yadm"
 brew "zsh"
 
-# Ruby dependencies
+# ruby-build dependencies
+# https://github.com/rbenv/ruby-build/wiki#suggested-build-environment
 brew "autoconf"
 brew "gmp"
 brew "libyaml"
